@@ -56,4 +56,5 @@ def update_db():
             new_image = Picture(filename, thumbnail)
             db.session.add(new_image)
             db.session.commit()
+    print("Database Updated")
 

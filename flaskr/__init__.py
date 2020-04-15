@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 from flaskr import models, routes, crawler
 
 db.create_all()
+crawler.update_db()
 
 def create_app():
     return app
