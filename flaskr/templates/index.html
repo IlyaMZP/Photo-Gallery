@@ -7,6 +7,7 @@
 			<button class="next"></button>
 		</div>
 		<div class="album">
+		My photos
 		</div>
 	</div>
 	<div id="frame">
@@ -21,6 +22,9 @@
 	<div class="gallery">
 		<div id="slider" class="slider">
 			<ul id="thumbnails">
+			{% for picture in pictures %}
+					<li class="" style="display: inline-block;"><img data-index="{{ loop.index }}" src="/{{ picture.thumbnail }}" loading="lazy" data-fullimg="/{{ picture.image }}"></li>
+			{% endfor %}
 			</ul>
 			<span class="prev"></span>
 			<span class="next"></span>

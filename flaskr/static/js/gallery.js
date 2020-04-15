@@ -11,30 +11,14 @@ $(function() {
 	var thumbnails_width = 0;
 	var $edge;
 	var $selected;
-	var currPhoto;
+	var currPhoto = 1;
 
 	// Get gallery json data & initialize page
-	$.getJSON('/gallery_json', function(data) {
-		data = JSON.parse(data);
-		$header.children('.album').text(data.album.name);
-		photos = data.photos;
-		thumbnails = "";
-		
-		// Create thumbnails
-		for(var i=0; i < data.photos.length; i++){
-			photo = data.photos[i];
-			thumbnails += "<li><img data-index=" + photo.id + " src='/static/" + photo.thumb_url +
-										"' alt='" + photo.title + "' title='" + photo.title + "' /></li>";
-		}
-		$thumbnails.html(thumbnails);
-
-		// Select first photo and thumbnail by default
-		currPhoto = parseInt(photos[0].id, 10);
-		setImage(currPhoto);
+	$(function() {
 		firstThumbnail = $thumbnails.children(":first");
 		selectThumbnail(firstThumbnail);
+		setImage(currPhoto);
 
-		// Calculate and initiate slider if thumbnails overflow
 		var first = firstThumbnail.children("img"); // check if loaded
 		if (first[0].complete) {
 			initSlider();
@@ -43,10 +27,8 @@ $(function() {
 			first.load(initSlider);
 		}
 
-		// Make page visible
 		$('body').css("opacity", "1");
 	});
-
 	// Select thumbnail & image on click
 	$thumbnails.on('click', 'img', function(event){
 		$this = $(this);
@@ -62,7 +44,7 @@ $(function() {
 		if (dir.indexOf('prev') >= 0 && currPhoto > 1) {
 			currPhoto--;
 			prevThumbnail();
-		} else if (dir.indexOf('next') >= 0 && currPhoto < photos.length) {
+		} else if (dir.indexOf('next') >= 0 && currPhoto < $("[data-index]").length) {
 			currPhoto++;
 			nextThumbnail();
 		}
@@ -127,12 +109,8 @@ $(function() {
 	});
 
 	function setImage(photoID) {
-		if (photoID > 0 && photoID <= photos.length) {
-			var photo = photos[photoID - 1];
-			$image.attr('src', '/static/' + photo.url);
-			$caption.children('.title').text(photo.title);
-			$caption.children(".data").text("Taken on " + photo.date + " in " + photo.location);
-		}
+			thumb = thumbnails.querySelector("[data-index='" + photoID + "']");
+			$image.attr('src', thumb.dataset.fullimg);
 	}
 
 	function selectThumbnail(thumbnail) {
