@@ -54,19 +54,17 @@ def update_database():
 @app.route('/admin/upload_image', methods=["POST"])
 def upload_image():
     if request.files:
-        image = request.files["image"]
-        if image.filename == "":
-            print("No filename")
-            return redirect(url_for('admin_cpl'))
-        if allowed_image(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(path.join(app.config["IMAGE_UPLOADS"], filename))
-            print("Image saved")
-            crawler.update_db()
-            return redirect(url_for('admin_cpl'))
-        else:
-            print("That file extension is not allowed")
-            return redirect(url_for('admin_cpl'))
+        images = request.files.getlist("image[]")
+        print(images)
+        for image in images:
+            if image.filename == "":
+                print("No filename")
+                return redirect(url_for('admin_cpl'))
+            if allowed_image(image.filename):
+                filename = secure_filename(image.filename)
+                image.save(path.join(app.config["IMAGE_UPLOADS"], filename))
+        crawler.update_db()
+        return redirect(url_for('admin_cpl'))
 
 
 @app.route('/admin/register', methods=['GET', 'POST'])
