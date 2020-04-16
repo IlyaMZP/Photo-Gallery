@@ -8,9 +8,9 @@ from flaskr.models import Picture
 def index():
     if session.get('logged_in'):
         username = session.get('logged_in')
-        return render_template('index.html', pictures=Picture.query.all(), username=username)
+        return render_template('index.html', pictures=reversed(Picture.query.all()), username=username)
     else:
-        return render_template('index.html', pictures=Picture.query.all())
+        return render_template('index.html', pictures=reversed(Picture.query.all()))
 
 
 @app.route("/logout")

@@ -9,5 +9,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
+You can disable registration after initial setup in app.cfg
+
 ### Photo Gallery Preview
 ![alt text](https://raw.github.com/evac/Photo-Gallery/master/static/img/screenshot.png "Photo Gallery")
