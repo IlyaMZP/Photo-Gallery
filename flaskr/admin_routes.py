@@ -55,7 +55,6 @@ def update_database():
 def upload_image():
     if request.files:
         images = request.files.getlist("image[]")
-        print(images)
         for image in images:
             if image.filename == "":
                 print("No filename")
