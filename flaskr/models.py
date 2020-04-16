@@ -15,7 +15,7 @@ class Picture(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(), unique=True)
-    thumbnail = db.Column(db.String(), unique=True)
+    thumbnail = db.Column(db.String())
 
     def __init__(self, image, thumbnail):
         self.image = image

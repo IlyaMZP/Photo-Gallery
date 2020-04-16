@@ -1,2 +1,2 @@
 #!/bin/bash
-waitress-serve --call 'flaskr:create_app'
+waitress-serve --call --threads=8 'flaskr:create_app'

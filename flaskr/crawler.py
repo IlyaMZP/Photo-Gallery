@@ -1,4 +1,4 @@
-from os import walk, path, remove, chdir
+from os import walk, path, remove, chdir, getcwd
 from hashlib import md5
 from PIL import Image
 
@@ -31,7 +31,7 @@ def gen_thumbnail(image):
     try:
         im = Image.open(image)
         rgb_im = im.convert('RGB')
-        rgb_im.thumbnail((512, 512), Image.ANTIALIAS)
+        rgb_im.thumbnail((128 , 128), Image.ANTIALIAS)
         rgb_im.save(thumbnail, "JPEG")
     except IOError:
         print("Can't create thumbnail for", image)
@@ -39,6 +39,7 @@ def gen_thumbnail(image):
     return thumbnail
 
 def update_db():
+    current_wd = getcwd()
     chdir(app.root_path)
     images = image_list()
     for picture in Picture.query.all():
@@ -56,5 +57,6 @@ def update_db():
             new_image = Picture(filename, thumbnail)
             db.session.add(new_image)
             db.session.commit()
+    chdir(current_wd)
     print("Database Updated")
 

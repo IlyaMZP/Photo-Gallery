@@ -8,7 +8,7 @@ app.permanent_session_lifetime = timedelta(minutes=10)
 
 db = SQLAlchemy(app)
 
-from flaskr import models, routes, crawler
+from flaskr import models, routes, crawler, admin_routes
 
 db.create_all()
 crawler.update_db()
