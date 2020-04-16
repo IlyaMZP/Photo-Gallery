@@ -1,5 +1,6 @@
 Flask
 Flask-SQLAlchemy
+pillow
 requests
 waitress
 werkzeug
