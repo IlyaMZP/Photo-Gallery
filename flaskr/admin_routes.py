@@ -53,7 +53,7 @@ def update_database():
 
 @app.route('/admin/upload_image', methods=["POST"])
 def upload_image():
-    if request.files:
+    if request.files and session.get('logged_in'):
         images = request.files.getlist("image[]")
         for image in images:
             if image.filename == "":
