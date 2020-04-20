@@ -110,6 +110,7 @@ $(function() {
 
 	function setImage(photoID) {
 			thumb = thumbnails.querySelector("[data-index='" + photoID + "']");
+			$image.attr('src', '');
 			$image.attr('src', thumb.dataset.fullimg);
 	}
 
