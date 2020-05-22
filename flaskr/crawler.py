@@ -1,6 +1,7 @@
 from os import walk, path, remove, chdir, getcwd
 from hashlib import md5
 from PIL import Image
+import re
 
 from flaskr import db, app
 from flaskr.models import Picture
@@ -10,10 +11,16 @@ images_path = 'static/gallery/'
 thumbnails_path = 'static/thumbnails/'
 error_thumbnail = 'static/thumbnails/error.jpg'
 
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    return [ atoi(c) for c in re.split(r'(\d+)', text) ]
+
 def image_list():
     files = []
     for r, d, f in walk(images_path):
-        for file in f:
+        for file in sorted(f, key=natural_keys):
             if '.jpg' or '.jpeg' or '.png' or '.webp' in file:
                 files.append(path.join(r, file))
     return files
