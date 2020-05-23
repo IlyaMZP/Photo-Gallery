@@ -32,25 +32,27 @@ $(function () {
     selectThumbnail($this.parent('li'), photoID);
     currPhoto = photoID
   });
-  $frame.on('click', function (event) {
+  $image.on('click', function (event) {
     if (currPhoto < $('[data-index]').length) {
       currPhoto++;
       nextThumbnail();
       $slider.find('.next').trigger('click')
+      setImage(currPhoto)
     }
-    setImage(currPhoto)
   });
   $nav.on('click', 'button', function (event) {
     var dir = this.className;
     if (dir.indexOf('prev') >= 0 && currPhoto > 1) {
       currPhoto--;
       prevThumbnail()
+      $slider.find('.prev').trigger('click');
+      setImage(currPhoto)
     } else if (dir.indexOf('next') >= 0 && currPhoto < $('[data-index]').length) {
       currPhoto++;
       nextThumbnail()
-      $slider.find('.next').trigger('click')
+      $slider.find('.next').trigger('click');
+      setImage(currPhoto)
     }
-    setImage(currPhoto)
   });
   $(window).on('resize', function () {
     sliderDisplay();
