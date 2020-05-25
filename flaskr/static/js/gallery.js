@@ -21,7 +21,7 @@ $(function () {
     if (first[0].complete) {
       initSlider()
     } else {
-      first.load(initSlider)
+      first.on("load", initSlider)
     }
     $('body').css('opacity', '1')
   });
