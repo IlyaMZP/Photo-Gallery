@@ -1,0 +1,76 @@
+{% extends "admin/base.html" %}
+{% block javascript %}
+<script type="text/javascript">
+$(function() {
+  $('#thumbnails').on('click', 'img', function(event){
+    $this = $(this);
+    var photoID = parseInt($this.data('index'), 10);
+    var result = confirm("Delete " + photoID + "?");
+    if (result) {
+        $.ajax({
+          type: 'POST',
+          data: 'id=' + photoID,
+          success: function() { document.querySelector("[data-index='" + photoID + "']").remove(); },
+          error: function(){ alert("Error"); },
+          url: '/admin/delete_images',
+          cache:false
+        });
+    }
+  });
+});
+</script>
+{% endblock %}
+{% block content %}
+{% if username %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Gallery</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/update_db">Update DB</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/upload_images">Upload Images</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">{{ username }}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Delete images</h1>
+      <hr>
+      {% if error %}
+      <h2> {{ error }} </h2>
+      {% endif %}
+      <ul id="thumbnails">
+    {% for picture in pictures %}
+    <li class="" style="display: inline-block;"><img data-index="{{ picture.id }}" src="/{{ picture.thumbnail }}" loading="lazy"></li>
+    {% endfor %}
+    </ul>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h2>Login</h2>
+<form action="/admin" method="POST">
+  <input type="username" name="username" placeholder="Username">
+  <input type="password" name="password" placeholder="Password">
+  <input type="submit" value="Log in">
+</form>
+<a href="{{ url_for('register') }}"> Register </a>
+
+{% endif %}
+{% endblock %}

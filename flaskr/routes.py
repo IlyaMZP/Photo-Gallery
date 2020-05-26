@@ -13,14 +13,8 @@ def index():
         return render_template('index.html', pictures=reversed(Picture.query.all()))
 
 
-@app.route("/logout")
-def logout():
-    session['logged_in'] = False
-    return redirect(url_for('index'))
-
-
 @app.after_request
 def redirect_to_signin(response):
     if response.status_code == 401:
-        return redirect(url_for('login') + '?next=' + request.url)
+        return redirect(url_for('upload_images') + '?next=' + request.url)
     return response

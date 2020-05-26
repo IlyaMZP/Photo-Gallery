@@ -33,7 +33,6 @@ img {
 	height: 80px;
 	background-color: #222;
 	background-image: url("/static/img/dark-texture.png");
-	font-family: "Meddon", sans-serif;
 	font-size: 38px;
 	color: #EBE7E2;
 	line-height: 80px;
@@ -42,6 +41,11 @@ img {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+.photo {
+	min-height: 420px;
+	display: block;
 }
 
 /* Navigation

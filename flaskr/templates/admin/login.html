@@ -1,14 +1,10 @@
 {% extends "admin/base.html" %}
 {% block content %}
-{% if error %}
-<h3>{{error}}</h3>
-{% endif %}
-
-<h2>Register</h2>
-<form action="/admin/register" method="POST">
+<h2>Login</h2>
+<form action="/login" method="POST">
   <input type="username" name="username" placeholder="Username">
   <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Register">
+  <input type="submit" value="Log in">
 </form>
-<a href="{{ url_for('upload_images') }}"> Login </a>
+<a href="{{ url_for('register') }}"> Register </a>
 {% endblock %}

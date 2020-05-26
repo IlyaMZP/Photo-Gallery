@@ -7,23 +7,20 @@
 			<button class="next"></button>
 		</div>
 		<div class="album">
-		My photos
+		MZP Photos
 		</div>
 	</div>
 	<div id="frame">
 		<div class="photo-wrapper">
 			<img class="photo" />
-		</div>
-		<div class="photo-caption">
-			<div class="title"></div>
-			<div class="data"></div>
+			<img class="loading" src="/static/img/loading.png" style="position: absolute; margin-left: -50px; margin-top: -50px; top: 50%; left: 50%">
 		</div>
 	</div>
 	<div class="gallery">
 		<div id="slider" class="slider">
 			<ul id="thumbnails">
 			{% for picture in pictures %}
-					<li class="" style="display: inline-block;"><img data-index="{{ loop.index }}" src="/{{ picture.thumbnail }}" loading="lazy" data-fullimg="/{{ picture.image }}"></li>
+				<li class="" style="display: inline-block;"><img data-index="{{ loop.index }}" src="/{{ picture.thumbnail }}" loading="lazy" data-fullimg="/{{ picture.image }}"></li>
 			{% endfor %}
 			</ul>
 			<span class="prev"></span>
@@ -33,6 +30,5 @@
 	<div id="themes" class="themes">
 			<span class="active" data-theme="original">Original Style</span> | <span data-theme="another">Another Style</span>
 	</div>
-	<a href="{{ url_for('admin_cpl') }}"> Control Panel </a>
 </div>
 {% endblock %}
