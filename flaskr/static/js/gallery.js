@@ -5,6 +5,7 @@ $(function () {
   var $themes = $('#themes');
   var $nav = $('#nav');
   var $image = $frame.find('.photo');
+  var $loading = $frame.find('.loading');
   var $caption = $frame.children('.photo-caption');
   var $thumbnails = $slider.children('#thumbnails');
   var $slider_btn = $slider.children('span');
@@ -39,6 +40,9 @@ $(function () {
       $slider.find('.next').trigger('click')
       setImage(currPhoto)
     }
+  });
+  $image.on('load', function (event) {
+    $loading.hide();
   });
   $nav.on('click', 'button', function (event) {
     var dir = this.className;
@@ -107,7 +111,7 @@ $(function () {
   });
   function setImage(photoID) {
     thumb = thumbnails.querySelector('[data-index=\'' + photoID + '\']');
-    //$image.attr('src', '');
+    $loading.show();
     $image.attr('src', thumb.dataset.fullimg)
   }
   function selectThumbnail(thumbnail) {
@@ -156,4 +160,3 @@ $(function () {
     return $last.position().top
   }
 })
-
