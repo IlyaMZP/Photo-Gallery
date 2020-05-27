@@ -106,7 +106,7 @@ def register():
                     new_user = User(username=login, password=hash_pwd)
                     db.session.add(new_user)
                     db.session.commit()
-                    return render_template('admin/upload_images.html')
+                    return render_template('admin/login.html')
                 except:
                     return render_template('admin/register.html', error="User exists")
             else:
