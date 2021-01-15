@@ -5,7 +5,7 @@ A simple, responsive photo gallery with jQuery on the front-end and Flask framew
 
 Install dependencies and run as follows:
 ```
-pip install -r requirements.txt
+pip install -r requirements.txt --user
 flask run
 ```
 
