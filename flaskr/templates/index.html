@@ -13,7 +13,7 @@
 	<div id="frame">
 		<div class="photo-wrapper">
 			<img class="photo" />
-			<img class="loading" src="/static/img/loading.png" style="position: absolute; margin-left: -50px; margin-top: -50px; top: 50%; left: 50%">
+			<img class="loading" src="{{ url_for('static', filename='img/loading.png') }}" style="position: absolute; margin-left: -50px; margin-top: -50px; top: 50%; left: 50%">
 		</div>
 	</div>
 	<div class="gallery">
@@ -23,12 +23,29 @@
 				<li class="" style="display: inline-block;"><img data-index="{{ loop.index }}" src="/{{ picture.thumbnail }}" loading="lazy" data-fullimg="/{{ picture.image }}"></li>
 			{% endfor %}
 			</ul>
-			<span class="prev"></span>
-			<span class="next"></span>
+			<span class="prev" style="display: block;"></span>
+			<span class="next" style="display: block;"></span>
 		</div>
 	</div>
 	<div id="themes" class="themes">
 			<span class="active" data-theme="original">Original Style</span> | <span data-theme="another">Another Style</span>
 	</div>
+    {% for album in albums %}
+<a target="_self" href="?album={{ album.id }}">
+  <div class="albums">
+    <img src="{{ album.thumbnail }}" alt="{{ album.album_name.split('_',1)[1] }}" width="600" height="400">
+
+  <div class="desc">{{ album.album_name.split("_",1)[1] }}</div>
+  </div>
+</a>
+    {% endfor %}
+<a target="_self" href="?album=0">
+  <div class="albums">
+    <img src="{{ url_for('static', filename='img/all.png') }}" alt="All Photos" width="600" height="400">
+
+  <div class="desc">All Photos</div>
+  </div>
+</a>
+</div>
 </div>
 {% endblock %}

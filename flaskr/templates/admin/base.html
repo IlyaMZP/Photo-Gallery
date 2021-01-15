@@ -7,7 +7,41 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.min.css') }}" type="text/css"/>
     <script src="{{ url_for("static", filename="js/jquery-3.5.0.min.js") }}"></script>
+	<script src="{{ url_for('static', filename='js/dropzone.min.js') }}" type="text/javascript"></script>
+  <script>
+Dropzone.options.myAwesomeDropzone = {
+    url: '/upload_images',
+    autoProcessQueue: true,
+    uploadMultiple: true,
+    parallelUploads: 3,
+    maxFiles: 3000,
+    init: function () {
+        var myDropzone = this;
+        $('#submit_form').on("click", function() {
+            myDropzone.processQueue();
+        });
+        this.on("sending", function(file, xhr, formData){
+            $('#addproduct').find('input').each(function() {
+                formData.append( $(this).attr('name'), $(this).val() );
+            });
+            $('#addproduct').find('select').each(function() {
+                formData.append( $(this).attr('name'), $(this).val() );
+            });
+        });
+        this.on("success", function(file, response) {
+            console.log(response);
+        });
+        this.on("completemultiple", function(files) {
+            if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+              window.location.href = '/update_db';
+            }
+        });
+    },
+
+};
+  </script>
     {% block javascript %}{% endblock %}
     
     <title>Gallery Admin Control</title>

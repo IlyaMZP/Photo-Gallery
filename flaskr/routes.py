@@ -1,16 +1,17 @@
 from flask import Flask, url_for, render_template, request, redirect, session
+from sqlalchemy import desc
 
-from flaskr import app
-from flaskr.models import Picture
+from flaskr import app, crawler
+from flaskr.models import Picture, Album
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if session.get('logged_in'):
-        username = session.get('logged_in')
-        return render_template('index.html', pictures=reversed(Picture.query.all()), username=username)
+    album = request.args.get('album', None)
+    if album and album != "0":
+        return render_template('index.html', pictures=reversed(Picture.query.filter_by(album_id=album).all()), albums=reversed(Album.query.all()))
     else:
-        return render_template('index.html', pictures=reversed(Picture.query.all()))
+        return render_template('index.html', pictures=reversed(Picture.query.all()), albums=reversed(Album.query.all()))
 
 
 @app.after_request

@@ -14,6 +14,11 @@ $(function () {
   var $selected;
   var currPhoto = 1;
   $(function () {
+    if (localStorage.getItem("theme") == "another") {
+        $themes.children('[data-theme="another"]').trigger('click');
+    } else {
+        $themes.children('[data-theme="original"]').trigger('click');
+    }
     firstThumbnail = $thumbnails.children(':first');
     selectThumbnail(firstThumbnail);
     thumb = thumbnails.querySelector('[data-index=\'' + currPhoto + '\']');
@@ -58,13 +63,6 @@ $(function () {
       setImage(currPhoto)
     }
   });
-  $(window).on('resize', function () {
-    sliderDisplay();
-    $thumbnails.children().css('display', 'inline-block');
-    $edge = $thumbnails.children(':first');
-    displaySliderBtn('prev', !1);
-    displaySliderBtn('next', !0)
-  });
   $slider.on('click', 'span', function (event) {
     var dir = event.target.className;
     var $first = $thumbnails.children(':first');
@@ -93,12 +91,14 @@ $(function () {
     theme = $this.data('theme');
     if (!$this.hasClass('active')) {
       if (theme == 'another') {
+        localStorage.setItem("theme", "another");
         $('link[href="/static/css/original.min.css"]').attr({
           href: '/static/css/another.min.css'
         });
         $nav.appendTo('#frame');
         $caption.appendTo('.photo-wrapper')
       } else {
+        localStorage.setItem("theme", "original");
         $('link[href="/static/css/another.min.css"]').attr({
           href: '/static/css/original.min.css'
         });
@@ -136,16 +136,7 @@ $(function () {
       thumbnails_width += $(this).outerWidth(!0)
     });
     $edge = $thumbnails.children(':first');
-    sliderDisplay();
     displaySliderBtn('prev', !1)
-  }
-  function sliderDisplay() {
-    slider_width = $slider.innerWidth();
-    if (slider_width < thumbnails_width && $slider_btn.css('display') == 'none') {
-      $slider_btn.css('display', 'block')
-    } else if (slider_width >= thumbnails_width && $slider_btn.css('display') == 'block') {
-      $slider_btn.css('display', 'none')
-    }
   }
   function displaySliderBtn(dir, display) {
     $btn = $slider.children('.' + dir);

@@ -9,10 +9,10 @@ $(function() {
     if (result) {
         $.ajax({
           type: 'POST',
-          data: 'id=' + photoID,
+          data: 'image_id=' + photoID,
           success: function() { document.querySelector("[data-index='" + photoID + "']").remove(); },
           error: function(){ alert("Error"); },
-          url: '/admin/delete_images',
+          url: "{{ url_for('delete_images') }}",
           cache:false
         });
     }
@@ -31,13 +31,13 @@ $(function() {
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/admin/update_db">Update DB</a>
+        <a class="nav-link" href="{{ url_for('update_database') }}">Update DB</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/admin/upload_images">Upload Images</a>
+        <a class="nav-link" href="{{ url_for('upload_images') }}">Upload Images</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#">{{ username }}</a>
@@ -45,6 +45,29 @@ $(function() {
     </ul>
   </div>
 </nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Delete albums</h1>
+      <form action="{{ url_for('delete_images') }}" method="GET">
+        <div class="form-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Album</label>
+              </div>
+              <select class="custom-select" name="album_id" id="inputGroupSelect01">
+                <option selected value="0">Select album to delete</option>
+                {% for album in albums %}
+                <option value="{{ album.id }}">{{ album.album_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
 
 <div class="container">
   <div class="row">

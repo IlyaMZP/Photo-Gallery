@@ -1,10 +1,10 @@
-from os import walk, path, remove, chdir, getcwd
+from os import walk, path, remove, chdir, getcwd, listdir
 from hashlib import md5
 from PIL import Image
 import re
 
 from flaskr import db, app
-from flaskr.models import Picture
+from flaskr.models import Picture, Album
 
 
 images_path = 'static/gallery/'
@@ -17,12 +17,18 @@ def atoi(text):
 def natural_keys(text):
     return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
-def image_list():
+
+def dir_list():
+    return sorted(listdir(images_path), key=natural_keys)
+
+
+def image_list(dirs):
     files = []
-    for r, d, f in walk(images_path):
-        for file in sorted(f, key=natural_keys):
-            if '.jpg' or '.jpeg' or '.png' or '.webp' in file:
-                files.append(path.join(r, file))
+    for directory in dirs:
+        for r, d, f in walk(path.join(images_path, directory)):
+            for file in sorted(f, key=natural_keys):
+                if '.jpg' or '.jpeg' or '.png' or '.webp' in file:
+                    files.append(path.join(r, file))
     return files
 
 def gen_md5(filename):
@@ -48,7 +54,8 @@ def gen_thumbnail(image):
 def update_db():
     current_wd = getcwd()
     chdir(app.root_path)
-    images = image_list()
+    dirs = dir_list()
+    images = image_list(dirs)
     for picture in Picture.query.all():
         if picture.image not in images:
             try:
@@ -57,11 +64,26 @@ def update_db():
                 pass
             db.session.delete(picture)
             db.session.commit()
+    for album in Album.query.all():
+        if album.album_name not in dirs:
+            print(dirs)
+            print(album.album_name)
+            db.session.delete(album)
+            db.session.commit()
     for filename in images:
         image = Picture.query.filter_by(image=filename).first()
         if not image:
             thumbnail = gen_thumbnail(filename)
-            new_image = Picture(filename, thumbnail)
+            im_path = path.dirname(filename)
+            album_name = path.basename(im_path)
+            album = Album.query.filter_by(album_name=album_name).first()
+            if not album:
+                album = Album(album_name, thumbnail)
+                db.session.add(album)
+                db.session.commit()
+            else:
+                album = Album.query.filter_by(album_name=album_name).one()
+            new_image = Picture(filename, thumbnail, album.id)
             db.session.add(new_image)
             db.session.commit()
     chdir(current_wd)

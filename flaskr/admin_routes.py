@@ -1,10 +1,12 @@
 from flask import Flask, url_for, render_template, request, redirect, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from os import path, remove
+from sqlalchemy import func
+from os import path, mkdir, remove
+from shutil import rmtree
 
 from flaskr import app, db, crawler
-from flaskr.models import User, Picture
+from flaskr.models import User, Picture, Album
 
 
 def allowed_image(filename):
@@ -17,24 +19,35 @@ def allowed_image(filename):
         return False
 
 
-@app.route('/admin/upload_images', methods=['GET', 'POST'])
+@app.route('/upload_images', methods=['GET', 'POST'])
 def upload_images():
     if request.method == 'GET':
         if session.get('logged_in'):
             username = session.get('logged_in')
-            return render_template('admin/upload_images.html', username=username)
+            return render_template('admin/upload_images.html', username=username, albums=Album.query.all())
         else:
             return render_template('admin/login.html')
     else:
         if request.files and session.get('logged_in'):
-            images = request.files.getlist("image[]")
-            for image in images:
-                if image.filename == "":
-                    print("No filename")
-                    return redirect(url_for('upload_images'))
-                if allowed_image(image.filename):
-                    filename = secure_filename(image.filename)
-                    image.save(path.join(app.config["IMAGE_UPLOADS"], filename))
+            album_id = request.form['album_id']
+            album_name = request.form['album_name']
+            for key, f in request.files.items():
+                if key.startswith('file'):
+                    if f == "":
+                        print("No filename")
+                        return redirect(url_for('upload_images'))
+                    if allowed_image(f.filename):
+                        filename = secure_filename(f.filename)
+                        if album_id != "0":
+                            album_dir = Album.query.filter_by(id=album_id).first().album_name
+                        else:
+                            album_dir = str(db.session.query(Album).count() + 1) + "_"
+                            album_dir += album_name
+                            try:
+                                mkdir(path.join(app.config["IMAGE_UPLOADS"], album_dir))
+                            except FileExistsError:
+                                pass
+                        f.save(path.join(app.config["IMAGE_UPLOADS"], album_dir, filename))
             return redirect(url_for('upload_images'))
 
 
@@ -62,14 +75,23 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/admin/delete_images', methods=['GET', 'POST'])
+@app.route('/delete_images', methods=['GET', 'POST'])
 def delete_images():
     if session.get('logged_in'):
         if request.method == 'GET':
             username = session.get('logged_in')
-            return render_template('admin/delete_images.html', pictures=Picture.query.all(), username=username)
+            album_id = request.args.get('album_id', None)
+            if album_id and album_id != "0":
+                album_dir = Album.query.filter_by(id=album_id).first().album_name
+                try:
+                    rmtree(path.join(app.config["IMAGE_UPLOADS"], album_dir))
+                except:
+                    pass
+                Album.query.filter_by(id=album_id).delete()
+                db.session.commit()
+            return render_template('admin/delete_images.html', pictures=Picture.query.all(), username=username, albums=Album.query.all())
         else:
-            image_id = request.form['id']
+            image_id = request.form['image_id']
             if image_id:
                 picture = Picture.query.filter_by(id=image_id).first()
                 remove(path.join(app.root_path, picture.image))
@@ -83,7 +105,7 @@ def delete_images():
         return redirect(url_for('upload_images'))
 
 
-@app.route('/admin/update_db')
+@app.route('/update_db')
 def update_database():
     if session.get('logged_in'):
         crawler.update_db()
@@ -92,7 +114,7 @@ def update_database():
         return "Error"
 
 
-@app.route('/admin/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if app.config['ALLOW_REGISTRATION'] == 'True':
         if request.method == 'GET':
