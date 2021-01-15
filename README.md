@@ -6,7 +6,7 @@ A simple, responsive photo gallery with jQuery on the front-end and Flask framew
 Install dependencies and run as follows:
 ```
 pip install -r requirements.txt
-python app.py
+flask run
 ```
 
 You can disable registration after initial setup in app.cfg
